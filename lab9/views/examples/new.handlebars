@@ -1,0 +1,27 @@
+<style type="text/css">
+</style>
+<form id="noteForm">
+  <div class="form-group">
+    <label for="noteTitle">noteTitle:</label>
+    <input type="text" class="form-control" name="noteTitle" id="noteTitle">
+  </div>
+
+  <div class="form-group">
+    <label for="dueDate">dueDate:</label>
+    <input type="text" class="form-control" name="dueDate" id="dueDate">
+  </div>
+
+  <div class="form-group">
+    <label for="noteSummary">noteSummary:</label>
+    <input type="text" class="form-control" name="noteSummary" id="noteSummary">
+  </div>
+
+  <div class="form-group">
+    <label for="noteBody">noteBody:</label>
+    <textarea id="noteBody" name="noteBody" rows="10" cols="30"></textarea>
+  </div>
+  <div class="form-group hidden" id="errorContainer">
+  	<div class="alert alert-danger" id="error"></div>
+  </div>
+  <button type="submit" class="btn btn-default">Submit</button>
+</form>

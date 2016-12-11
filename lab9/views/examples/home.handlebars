@@ -1,0 +1,10 @@
+
+<div class="notes">
+  {{#each notes}}
+    <div class="note">
+      <h2><a href="/{{@key}}">{{title}}</a></h2>
+        <p>Summary: {{summary}}</p>
+        <p>Body: {{body}}</p>
+    </div>
+  {{/each}}
+</div>

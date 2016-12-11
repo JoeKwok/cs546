@@ -1,33 +1,20 @@
 const express = require("express");
-const fs = require('fs');
-
 const bodyParser = require("body-parser");
-//{key:fs.readFileSync('.ssl/runxiflute.key'), cert: fs.readFileSync('.ssl/runxiflute.crt') }
-const https = require('https');
+const session = require('express-session')
+const cookieParser = require('cookie-parser');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const flash = require('connect-flash');
 const app = express();
-const static = express.static(__dirname + '/public');
-const static_uploads = express.static(__dirname + '/uploads');
+
 const configRoutes = require("./routes");
-const cookieParser = require('cookie-parser')
 
 const exphbs = require('express-handlebars');
 
 const Handlebars = require('handlebars');
 
 const handlebarsInstance = exphbs.create({
-    defaultLayout: 'main',
-    // Specify helpers which are only registered on this instance.
-    helpers: {
-        asJSON: (obj, spacing) => {
-            if (typeof spacing === "number")
-                return new Handlebars.SafeString(JSON.stringify(obj, null, spacing));
-
-            return new Handlebars.SafeString(JSON.stringify(obj));
-        }
-    },
-    partialsDir: [
-        'views/partials/'
-    ]
+    defaultLayout: 'main'  
 });
 
 const rewriteUnsupportedBrowserMethods = (req, res, next) => {
@@ -43,20 +30,42 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
     next();
 };
 
-
-app.use("/public", static);
-app.use("/uploads", static_uploads);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 app.use(rewriteUnsupportedBrowserMethods);
-app.use(cookieParser());
+
+// Express Session
+app.use(session({
+    secret: 'secret',
+    saveUninitialized: true,
+    resave: true
+}));
+
+// Passport init
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Connect Flash
+app.use(flash());
+
+// Global Vars
+app.use(function (req, res, next) {
+  res.locals.success_msg = req.flash('success_msg');
+  res.locals.error_msg = req.flash('error_msg');
+  res.locals.error = req.flash('error');
+  res.locals.user = req.user || null;
+  console.log(res.locals);
+  next();
+});
+
 
 app.engine('handlebars', handlebarsInstance.engine);
 app.set('view engine', 'handlebars');
 
 configRoutes(app);
 
-https.createServer({key:fs.readFileSync('.ssl/runxiflute.key'), cert: fs.readFileSync('.ssl/runxiflute.crt') }, app).listen(3000, () => {
+app.listen(3000, () => {
     console.log("We've now got a server!");
-    console.log("Your routes will be running on https://localhost:3000");
+    console.log("Your routes will be running on http://localhost:3000");
 });

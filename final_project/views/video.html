@@ -1,51 +1,23 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Simple Map</title>
-    <meta name="viewport" content="initial-scale=1.0">
-    <meta charset="utf-8">
-    <style>
-      html, body {
-        height: 100%;
-        margin: 0;
-        padding: 0;
-      }
-      #map {
-        height: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="map"></div>
-    <script>
-      var map;
-      function initMap() {
-        var myLatLng = {lat: 40.7468708, lng: -74.0280354};
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: myLatLng,
-          zoom: 15
-        });
+<p>Click the button to get your coordinates.</p>
 
-        var marker = new google.maps.Marker({
-          position: myLatLng,
-          map: map,
-          title: 'Click to zoom'
-        });
+<button onclick="getLocation()">Try It</button>
 
-        var contentString = "Hello Google Map API!";
-        var vedioString = '<video width="320" height="240" src="/uploads/myvideo.MOV" controls></video>';
+<p id="demo"></p>
 
-        var myWindow = new google.maps.InfoWindow({
-          content: vedioString
-        });
-        marker.addListener('click', () => {
-          //map.setZoom(8);
-          //map.setCenter(marker.getPosition());
-          myWindow.open(map, marker);
-        });
-      }
-    </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXIMiQ_d6uSkP1OV2uzmYf2VACuWEZnFg&callback=initMap"
-    async defer></script>
-  </body>
-</html>
+<script>
+var x = document.getElementById("demo");
+
+function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    x.innerHTML = "Latitude: " + position.coords.latitude +
+    "<br>Longitude: " + position.coords.longitude;
+}
+</script>
+

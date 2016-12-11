@@ -1,14 +1,9 @@
 const express = require("express");
-const fs = require('fs');
-
 const bodyParser = require("body-parser");
-//{key:fs.readFileSync('.ssl/runxiflute.key'), cert: fs.readFileSync('.ssl/runxiflute.crt') }
-const https = require('https');
 const app = express();
 const static = express.static(__dirname + '/public');
-const static_uploads = express.static(__dirname + '/uploads');
+
 const configRoutes = require("./routes");
-const cookieParser = require('cookie-parser')
 
 const exphbs = require('express-handlebars');
 
@@ -43,20 +38,17 @@ const rewriteUnsupportedBrowserMethods = (req, res, next) => {
     next();
 };
 
-
 app.use("/public", static);
-app.use("/uploads", static_uploads);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(rewriteUnsupportedBrowserMethods);
-app.use(cookieParser());
 
 app.engine('handlebars', handlebarsInstance.engine);
 app.set('view engine', 'handlebars');
 
 configRoutes(app);
 
-https.createServer({key:fs.readFileSync('.ssl/runxiflute.key'), cert: fs.readFileSync('.ssl/runxiflute.crt') }, app).listen(3000, () => {
+app.listen(3000, () => {
     console.log("We've now got a server!");
-    console.log("Your routes will be running on https://localhost:3000");
+    console.log("Your routes will be running on http://localhost:3000");
 });

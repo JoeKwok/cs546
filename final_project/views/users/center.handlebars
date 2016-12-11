@@ -1,0 +1,11 @@
+
+
+<h1>Hi {{user.profile.name}}</h1>
+
+
+<h2>Videos List</h2>
+{{#each videos}}
+    <ul>
+        <li>{{originalName}}<a href="/videos/delete/{{_id}}">Delete</a></li>
+    </ul>
+{{/each}}

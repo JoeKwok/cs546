@@ -1,27 +1,60 @@
-
-
-
-
-<p>Click the button to get your coordinates.</p>
-
-<button onclick="getLocation()">Try It</button>
-
-<p id="demo"></p>
-
-<script>
-var x = document.getElementById("demo");
-
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
-    }
+<style type="text/css">
+.nav{
+    position: absolute;
+    top: 10px;
+    right: 20px;
 }
-
-function showPosition(position) {
-    x.innerHTML = "Latitude: " + position.coords.latitude +
-    "<br>Longitude: " + position.coords.longitude;
+.nav li{
+    list-style: none;
+    display:inline-block;
 }
-</script>
+</style>
+    <div id="map"></div>
+    <nav class="nav">
+        <ul>
+  {{#if user}}
 
+            <li><a href="/users/center">{{user.profile.name}}</a></li>
+        	<li><a href="/users/logout">Logout</a></li>
+  {{else}}
+        	<li><a href="/users/login">Login</a></li>
+  {{/if}}
+            <li><a href="/videos/upload">upload</li>
+
+        </ul>
+    </nav>
+    <script>
+      var map;
+      function initMap() {
+        var myLatLng = {lat: 40.7468708, lng: -74.0280354};
+        map = new google.maps.Map(document.getElementById('map'), {
+          center: myLatLng,
+          zoom: 15
+        });
+        var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+        
+        var userId = '{{#if user}}{{user._id}}{{/if}}';
+{{#each videos}}
+		
+        var marker{{@index}} = new google.maps.Marker({
+          position: {lat: {{lat}}, lng: {{lng}} },
+          map: map,
+          icon: userId == '{{userId}}' ? image : '',
+          title: 'Click to zoom'
+        });
+
+        var vedioString{{@index}} = '<video width="320" height="240" src="{{filepath}}" controls></video>';
+
+        var myWindow{{@index}} = new google.maps.InfoWindow({
+          content: vedioString{{@index}}
+        });
+        marker{{@index}}.addListener('click', () => {
+          myWindow{{@index}}.open(map, marker{{@index}});
+        });
+{{/each}}
+
+
+      }
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBXIMiQ_d6uSkP1OV2uzmYf2VACuWEZnFg&callback=initMap"
+    async defer></script>
